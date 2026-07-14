@@ -4,37 +4,41 @@ const lastName = document.getElementById("lastName");
 const phone = document.getElementById("phone");
 const email = document.getElementById("Email");
 
+const searchbar = document.getElementById("searchbar");
 
 const contactList = document.getElementById("contactList");
+const totalCount = document.getElementById("totalCount");
 
 let contacts = [];
 
 function addContact() {
+
     const contact = {
         firstName: firstName.value,
         lastName: lastName.value,
         phone: phone.value,
         email: email.value
     };
-    console.log("total counts:" + contacts.length);
+
 
     contacts.push(contact);
-    displayContacts();
+    displayContacts(contacts);
 
     contactForm.reset();
 }
-function displayContacts() {
+function displayContacts(contactsArray) {
     contactList.innerHTML = "";
+    totalCount.textContent = contacts.length;
 
-    for (let i = 0; i < contacts.length; i++) {
+    for (let i = 0; i < contactsArray.length; i++) {
 
         const card = document.createElement("div");
         card.classList.add("contact");
         card.innerHTML = `
-            <h3>${contacts[i].firstName} ${contacts[i].lastName}</h3>
+            <h3>${contactsArray[i].firstName} ${contactsArray[i].lastName}</h3>
 
-            <p>Phone : ${contacts[i].phone}</p>
-            <p>Email : ${contacts[i].email}</p>
+            <p>Phone : ${contactsArray[i].phone}</p>
+            <p>Email : ${contactsArray[i].email}</p>
             <button onclick="deleteContact(${i})">Delete</button>`;
 
         contactList.appendChild(card);
@@ -44,8 +48,18 @@ function displayContacts() {
 }
 function deleteContact(index) {
     contacts.splice(index, 1);
-    displayContacts();
+    displayContacts(contacts);
 }
+searchbar.addEventListener("input", function () {
+
+    const searchText = searchbar.value.toLowerCase();
+    const filteredContacts = contacts.filter(function (contact) {
+        return contact.firstName.toLowerCase().includes(searchText) || contact.lastName.toLowerCase().includes(searchText);
+
+    });
+
+    displayContacts(filteredContacts);
+})
 contactForm.addEventListener("submit", function (event) {
     event.preventDefault();
     addContact();

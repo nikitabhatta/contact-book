@@ -9,9 +9,11 @@
 <body>
     <div class="container">
         <h1>New Contact</h1>
+        <input id="searchbar" type="text" placeholder="Search Contact">
         <form id="contactForm">
 
             <div class="profile"></div>
+
 
             <input id="firstName" type="text" placeholder="First Name">
 
@@ -23,6 +25,8 @@
 
             <button type="submit"> Save Contact</button>
         </form>
+        <p>Total contacts: <spans id="totalCount">0</span></p>
+        <div id="contactList"></div>
 
         <div id="contactList"></div>
 
