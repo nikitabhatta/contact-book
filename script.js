@@ -22,23 +22,29 @@ function addContact() {
 
 
     contacts.push(contact);
-    displayContacts(contacts);
+    displayContacts();
 
     contactForm.reset();
 }
-function displayContacts(contactsArray) {
+function displayContacts() {
     contactList.innerHTML = "";
     totalCount.textContent = contacts.length;
 
-    for (let i = 0; i < contactsArray.length; i++) {
+    const searchText = searchbar.value.toLowerCase();
+    const filteredContacts = contacts.filter(contact => {
+        return contact.firstName.toLowerCase().includes(searchText) || contact.lastName.toLowerCase().includes(searchText);
+
+    });
+
+    for (let i = 0; i < filteredContacts.length; i++) {
 
         const card = document.createElement("div");
         card.classList.add("contact");
         card.innerHTML = `
-            <h3>${contactsArray[i].firstName} ${contactsArray[i].lastName}</h3>
+            <h3>${filteredContacts[i].firstName} ${filteredContacts[i].lastName}</h3>
 
-            <p>Phone : ${contactsArray[i].phone}</p>
-            <p>Email : ${contactsArray[i].email}</p>
+            <p>Phone : ${filteredContacts[i].phone}</p>
+            <p>Email : ${filteredContacts[i].email}</p>
             <button onclick="deleteContact(${i})">Delete</button>`;
 
         contactList.appendChild(card);
@@ -48,19 +54,13 @@ function displayContacts(contactsArray) {
 }
 function deleteContact(index) {
     contacts.splice(index, 1);
-    displayContacts(contacts);
+    displayContacts();
 }
-searchbar.addEventListener("input", function () {
+searchbar.addEventListener("input", () => {
 
-    const searchText = searchbar.value.toLowerCase();
-    const filteredContacts = contacts.filter(function (contact) {
-        return contact.firstName.toLowerCase().includes(searchText) || contact.lastName.toLowerCase().includes(searchText);
-
-    });
-
-    displayContacts(filteredContacts);
+    displayContacts();
 })
-contactForm.addEventListener("submit", function (event) {
+contactForm.addEventListener("submit", (event) => {
     event.preventDefault();
     addContact();
 
