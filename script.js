@@ -14,6 +14,7 @@ let contacts = [];
 function addContact() {
 
     const contact = {
+        id: Date.now(),
         firstName: firstName.value,
         lastName: lastName.value,
         phone: phone.value,
@@ -22,6 +23,7 @@ function addContact() {
 
 
     contacts.push(contact);
+    console.log(contacts);
     displayContacts();
 
     contactForm.reset();
@@ -45,16 +47,26 @@ function displayContacts() {
 
             <p>Phone : ${filteredContacts[i].phone}</p>
             <p>Email : ${filteredContacts[i].email}</p>
-            <button onclick="deleteContact(${i})">Delete</button>`;
+            <button data-id="${filteredContacts[i].id}"> Delete</button>`;
 
         contactList.appendChild(card);
 
 
     }
 }
-function deleteContact(index) {
-    contacts.splice(index, 1);
+contactList.addEventListener("click", (event) => {
+    const deleteButton = event.target.closest("button");
+    if (!deleteButton) {
+        return;
+    }
+    const id = Number(deleteButton.dataset.id);
+    deleteContact(id);
+});
+function deleteContact(id) {
+    contacts = contacts.filter(contact => contact.id != id);
+    console.log(contacts);
     displayContacts();
+
 }
 searchbar.addEventListener("input", () => {
 
