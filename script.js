@@ -10,22 +10,31 @@ const contactList = document.getElementById("contactList");
 const totalCount = document.getElementById("totalCount");
 
 let contacts = [];
+let editingContactId = null;
 
 function addContact() {
+    if (editingContactId === null) {
+        const contact = {
+            id: Date.now(),
+            firstName: firstName.value,
+            lastName: lastName.value,
+            phone: phone.value,
+            email: email.value
+        };
 
-    const contact = {
-        id: Date.now(),
-        firstName: firstName.value,
-        lastName: lastName.value,
-        phone: phone.value,
-        email: email.value
-    };
-
-
-    contacts.push(contact);
-    console.log(contacts);
+        contacts.push(contact);
+    } else {
+        const index = contacts.findIndex(contact => contact.id === editingContactId);
+        contacts[index] = {
+            id: editingContactId,
+            firstName: firstName.value,
+            lastName: lastName.value,
+            phone: phone.value,
+            email: email.value
+        };
+        editingContactId = null;
+    }
     displayContacts();
-
     contactForm.reset();
 }
 function displayContacts() {
@@ -47,7 +56,8 @@ function displayContacts() {
 
             <p>Phone : ${filteredContacts[i].phone}</p>
             <p>Email : ${filteredContacts[i].email}</p>
-            <button data-id="${filteredContacts[i].id}"> Delete</button>`;
+            <button class="edit-button" data-id="${filteredContacts[i].id}"> Edit </button>
+            <button class="delete-button" data-id="${filteredContacts[i].id}"> Delete</button>`;
 
         contactList.appendChild(card);
 
@@ -55,15 +65,26 @@ function displayContacts() {
     }
 }
 contactList.addEventListener("click", (event) => {
-    const deleteButton = event.target.closest("button");
-    if (!deleteButton) {
+
+    const button = event.target.closest("button");
+    if (!button) {
         return;
     }
-    const id = Number(deleteButton.dataset.id);
-    deleteContact(id);
+    const id = Number(button.dataset.id);
+    if (button.classList.contains("edit-button")) {
+        const contact = contacts.find(contact => contact.id === id);
+        editingContactId = id;
+        firstName.value = contact.firstName;
+        lastName.value = contact.lastName;
+        phone.value = contact.phone;
+        email.value = contact.email;
+    } else {
+        deleteContact(id);
+    }
+
 });
 function deleteContact(id) {
-    contacts = contacts.filter(contact => contact.id != id);
+    contacts = contacts.filter(contact => contact.id !== id);
     console.log(contacts);
     displayContacts();
 
